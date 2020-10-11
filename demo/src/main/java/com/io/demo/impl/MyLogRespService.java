@@ -1,9 +1,12 @@
 package com.io.demo.impl;
 
 import com.google.gson.Gson;
+import com.io.demo.controller.MyLogRespController;
 import com.io.demo.model.MyLog;
 import com.io.demo.model.MyLogResp;
 import com.io.demo.repo.MyLogRespRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,8 @@ import java.util.Optional;
 
 @Service
 public class MyLogRespService {
+    private static final Logger logger = LoggerFactory.getLogger(MyLogRespService.class);
+
     @Autowired
     MyLogRespRepo myLogRespRepo;
 
@@ -39,7 +44,6 @@ public class MyLogRespService {
                 str= str+ (char)i;
                 if(str.contains("{")  && str.contains("}")){
                     MyLog logreq = gson.fromJson(str,MyLog.class);
-
 
                     if(map.containsKey(logreq.getId())){
                         //Traversing map
@@ -64,8 +68,6 @@ public class MyLogRespService {
 
                                 myLogResp.setId(logreq.getId());
                                 myLogResp.setDuration(dur);
-                                //myLogResp.setType("T");
-                                //myLogResp.setHost("H");
                                 myLogResp.setAlert(alerflag);
                                 myLogRespRepo.save(myLogResp);
                                 map.remove(logreq.getId());  // remove id from map if its Finished
@@ -78,7 +80,8 @@ public class MyLogRespService {
                     }
                     else {
                         map.put(logreq.getId(),logreq);
-                        System.out.println("Added in map :"+logreq.getId());
+                        //System.out.println("Added in map :"+logreq.getId());
+                        logger.info("Id added to map - "+logreq.getId());
                     }
 
                     //System.out.println(log);
